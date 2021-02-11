@@ -94,7 +94,7 @@ window.addEventListener('load', () => {
 
     generateTiles(8, 8);
     plantFlags();
-    positionPlayers();
+    positionPieces();
 });
 
 function generateTiles (width, height) {
@@ -124,52 +124,21 @@ function plantFlags () {
     document.getElementById(`tile-${window.PLAYERS.blue.flag.position}`).classList.add("tile--flag", "flag--blue");
 }
 
-function positionPlayers () {
-    for (const property in window.PLAYERS.red.pieces) {
-        console.log(`${window.PLAYERS.red.pieces[property].position}`);
-        const tile = document.getElementById(`tile-${window.PLAYERS.red.pieces[property].position}`);
-
-        const piece = document.createElement("div");
-        piece.classList.add("piece");
-        piece.dataset.color = "red";
-        piece.dataset.type = "pawn";
-
-        tile.appendChild(piece);
+function positionPieces () {
+    for (const player in window.PLAYERS) {
+        for (const piece in window.PLAYERS[player].pieces) {
+            positionSinglePiece(window.PLAYERS[player].pieces[piece].position, player);
+        }
     }
+}
 
-    for (const property in window.PLAYERS.black.pieces) {
-        console.log(`${window.PLAYERS.black.pieces[property].position}`);
-        const tile = document.getElementById(`tile-${window.PLAYERS.black.pieces[property].position}`);
+function positionSinglePiece(tileId, color) {
+    const tile = document.getElementById(`tile-${tileId}`);
 
-        const piece = document.createElement("div");
-        piece.classList.add("piece");
-        piece.dataset.color = "black";
-        piece.dataset.type = "pawn";
+    const piece = document.createElement("div");
+    piece.classList.add("piece");
+    piece.dataset.color = `${color}`;
+    piece.dataset.type = "pawn";
 
-        tile.appendChild(piece);
-    }
-
-    for (const property in window.PLAYERS.green.pieces) {
-        console.log(`${window.PLAYERS.green.pieces[property].position}`);
-        const tile = document.getElementById(`tile-${window.PLAYERS.green.pieces[property].position}`);
-
-        const piece = document.createElement("div");
-        piece.classList.add("piece");
-        piece.dataset.color = "green";
-        piece.dataset.type = "pawn";
-
-        tile.appendChild(piece);
-    }
-
-    for (const property in window.PLAYERS.blue.pieces) {
-        console.log(`${window.PLAYERS.blue.pieces[property].position}`);
-        const tile = document.getElementById(`tile-${window.PLAYERS.blue.pieces[property].position}`);
-
-        const piece = document.createElement("div");
-        piece.classList.add("piece");
-        piece.dataset.color = "blue";
-        piece.dataset.type = "pawn";
-
-        tile.appendChild(piece);
-    }
+    tile.appendChild(piece);
 }
