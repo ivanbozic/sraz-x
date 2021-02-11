@@ -7,6 +7,8 @@ html {
 }
 
 body {
+    display: flex;
+    flex-direction: column;
     background: black;
     color: white;
     font-family: monospace;
@@ -14,6 +16,7 @@ body {
 
 .game {
     display: flex;
+    align-self: center;
 }
 
 .details-panel {
