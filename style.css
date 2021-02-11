@@ -33,9 +33,36 @@ body {
     border-left: 4px solid white;
     border-bottom: 2px solid #555;
     border-right: 4px solid #555;
+    position: relative;
     background: #aaa;
 }
 
 .tile:last-child {
     margin-right: 0;
+}
+
+.tile--flag:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-size: 100% 100%;
+}
+
+.tile--flag.flag--red:before {
+    background: transparent url("assets/flag-red.svg") no-repeat center center;
+}
+
+.tile--flag.flag--black:before {
+    background: transparent url("assets/flag-black.svg") no-repeat center center;
+}
+
+.tile--flag.flag--green:before {
+    background: transparent url("assets/flag-green.svg") no-repeat center center;
+}
+
+.tile--flag.flag--blue:before {
+    background: transparent url("assets/flag-blue.svg") no-repeat center center;
 }
