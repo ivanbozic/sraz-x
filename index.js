@@ -156,11 +156,14 @@ function generateHoles () {
 }
 
 function assignCategories () {
+    categories = ["sports", "history", "geography", "nature", "music", "general", "art", "science", "random"];
+
     tiles = Array.from(document.querySelectorAll(".tile:not(.tile--flag):not(.tile--hole)"));
 
     for (const tile in tiles) {
         const category = document.createElement("div");
         category.classList.add("category");
+        category.dataset.type = categories[Math.floor(Math.random() * categories.length)];
 
         tiles[tile].appendChild(category);
     }

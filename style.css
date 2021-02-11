@@ -9,15 +9,80 @@ html {
 body {
     background: black;
     color: white;
+    font-family: monospace;
 }
 
 .game {
+    display: flex;
+}
+
+.details-panel {
 
 }
+
+.categories-legend {
+
+}
+
+.categories-legend > div {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 18px;
+}
+
+.categories-legend > div > .category {
+    width: 20px;
+    height: 12px;
+    margin-right: 8px;
+    border-bottom: 2px solid white;
+    border-right: 4px solid white;
+    border-top: 2px solid #555;
+    border-left: 4px solid #555;
+}
+
+.category[data-type="sports"] {
+    background: #ff0000;
+}
+
+.category[data-type="history"] {
+    background: #fff;
+}
+
+.category[data-type="geography"] {
+    background: #0000aa;
+}
+
+.category[data-type="nature"] {
+    background: #550000;
+}
+
+.category[data-type="music"] {
+    background: #0055ff;
+}
+
+.category[data-type="general"] {
+    background: #00ff00;
+}
+
+.category[data-type="art"] {
+    background: #00aa00;
+}
+
+.category[data-type="science"] {
+    background: #ffaa00;
+}
+
+.category[data-type="random"] {
+    background: transparent url("assets/category-random.svg") repeat top left;
+}
+
+/* BOARD AND GAME DETAILS */
 
 .board {
     display: flex;
     flex-direction: column;
+    margin-right: 40px;
 }
 
 .row {
@@ -94,7 +159,7 @@ body {
     background: transparent url("assets/pawn-blue.svg") no-repeat center center;
 }
 
-.category {
+.tile > .category {
     width: 20px;
     height: 12px;
     border-bottom: 2px solid white;
@@ -104,5 +169,4 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    background: red;
 }
