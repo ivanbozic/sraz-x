@@ -42,6 +42,11 @@ body {
     margin-right: 0;
 }
 
+.tile--hole {
+    background: none;
+    border-color: black;
+}
+
 .tile--flag:before {
     content: "";
     position: absolute;

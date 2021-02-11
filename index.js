@@ -95,6 +95,7 @@ window.addEventListener('load', () => {
     generateTiles(8, 8);
     plantFlags();
     positionPieces();
+    generateHoles();
 });
 
 function generateTiles (width, height) {
@@ -141,4 +142,14 @@ function positionSinglePiece(tileId, color) {
     piece.dataset.type = "pawn";
 
     tile.appendChild(piece);
+    tile.classList.add("tile--piece");
+}
+
+function generateHoles () {
+    availableTiles = Array.from(document.querySelectorAll(".tile:not(.tile--flag):not(.tile--piece)"));
+    availableTiles = availableTiles.sort(() => Math.random() - Math.random()).slice(0, 4);
+
+    for (const tile in availableTiles) {
+        availableTiles[tile].classList.add("tile--hole");
+    }
 }
