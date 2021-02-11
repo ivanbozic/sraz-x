@@ -26,6 +26,7 @@ body {
 }
 
 .tile {
+    display: flex;
     width: 90px;
     height: 64px;
     margin-right: 8px;
@@ -65,4 +66,25 @@ body {
 
 .tile--flag.flag--blue:before {
     background: transparent url("assets/flag-blue.svg") no-repeat center center;
+}
+
+.tile > .piece {
+    width: 100%;
+    height: 100%;
+}
+
+.piece[data-color="red"] {
+    background: transparent url("assets/pawn-red.svg") no-repeat center center;
+}
+
+.piece[data-color="black"] {
+    background: transparent url("assets/pawn-black.svg") no-repeat center center;
+}
+
+.piece[data-color="green"] {
+    background: transparent url("assets/pawn-green.svg") no-repeat center center;
+}
+
+.piece[data-color="blue"] {
+    background: transparent url("assets/pawn-blue.svg") no-repeat center center;
 }
