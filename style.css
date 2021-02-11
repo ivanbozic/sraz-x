@@ -1,0 +1,41 @@
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    background: black;
+    color: white;
+}
+
+.game {
+
+}
+
+.board {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.tile {
+    width: 90px;
+    height: 64px;
+    margin-right: 8px;
+    border-top: 2px solid white;
+    border-left: 4px solid white;
+    border-bottom: 2px solid #555;
+    border-right: 4px solid #555;
+    background: #aaa;
+}
+
+.tile:last-child {
+    margin-right: 0;
+}
