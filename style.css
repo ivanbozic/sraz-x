@@ -93,3 +93,16 @@ body {
 .piece[data-color="blue"] {
     background: transparent url("assets/pawn-blue.svg") no-repeat center center;
 }
+
+.category {
+    width: 20px;
+    height: 12px;
+    border-bottom: 2px solid white;
+    border-right: 4px solid white;
+    border-top: 2px solid #555;
+    border-left: 4px solid #555;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: red;
+}

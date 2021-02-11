@@ -96,6 +96,7 @@ window.addEventListener('load', () => {
     plantFlags();
     positionPieces();
     generateHoles();
+    assignCategories();
 });
 
 function generateTiles (width, height) {
@@ -151,5 +152,16 @@ function generateHoles () {
 
     for (const tile in availableTiles) {
         availableTiles[tile].classList.add("tile--hole");
+    }
+}
+
+function assignCategories () {
+    tiles = Array.from(document.querySelectorAll(".tile:not(.tile--flag):not(.tile--hole)"));
+
+    for (const tile in tiles) {
+        const category = document.createElement("div");
+        category.classList.add("category");
+
+        tiles[tile].appendChild(category);
     }
 }
