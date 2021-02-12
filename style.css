@@ -16,15 +16,37 @@ body {
 
 .game {
     display: flex;
+    align-items: center;
     align-self: center;
 }
 
 .details-panel {
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.categories-legend {
+/* CURRENT PLAYER */
 
+.current-player {
+    margin-bottom: 24px;
+}
+
+.current-player img {
+    display: none;
+}
+
+.current-player[data-player="red"] img[data-color="red"],
+.current-player[data-player="black"] img[data-color="black"],
+.current-player[data-player="green"] img[data-color="green"],
+.current-player[data-player="blue"] img[data-color="blue"] {
+    display: block;
+}
+
+/* CATEGORIES LEGEND */
+
+.categories-legend {
+    margin-top: 24px;
 }
 
 .categories-legend > div {
@@ -85,7 +107,7 @@ body {
 .board {
     display: flex;
     flex-direction: column;
-    margin-right: 40px;
+    margin-right: 80px;
 }
 
 .row {

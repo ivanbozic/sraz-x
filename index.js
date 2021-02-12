@@ -89,6 +89,8 @@ window.PLAYERS = {
     }
 }
 
+window.CURRENT_PLAYER = null;
+
 window.addEventListener('load', () => {
     window.BOARD = document.getElementById("board");
 
@@ -97,6 +99,7 @@ window.addEventListener('load', () => {
     positionPieces();
     generateHoles();
     assignCategories();
+    setCurrentPlayer();
 });
 
 function generateTiles (width, height) {
@@ -167,4 +170,10 @@ function assignCategories () {
 
         tiles[tile].appendChild(category);
     }
+}
+
+function setCurrentPlayer() {
+    window.CURRENT_PLAYER = window.PLAYERS.red;
+
+    document.getElementById("current-player").dataset.player = "red";
 }
