@@ -32,15 +32,22 @@ body {
     margin-bottom: 24px;
 }
 
-.current-player img {
+.current-player > div {
     display: none;
+    flex-direction: column;
+    align-items: center;
 }
 
-.current-player[data-player="red"] img[data-color="red"],
-.current-player[data-player="black"] img[data-color="black"],
-.current-player[data-player="green"] img[data-color="green"],
-.current-player[data-player="blue"] img[data-color="blue"] {
-    display: block;
+.current-player > div span {
+    margin-top: 16px;
+    font-size: 24px;
+}
+
+.current-player[data-player="red"] div[data-color="red"],
+.current-player[data-player="black"] div[data-color="black"],
+.current-player[data-player="green"] div[data-color="green"],
+.current-player[data-player="blue"] div[data-color="blue"] {
+    display: flex;
 }
 
 /* CATEGORIES LEGEND */
@@ -52,7 +59,7 @@ body {
 .categories-legend > div {
     display: flex;
     align-items: center;
-    margin: 8px 0;
+    margin: 4px 0;
     font-size: 18px;
 }
 
