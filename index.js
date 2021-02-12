@@ -100,6 +100,7 @@ window.addEventListener('load', () => {
     generateHoles();
     assignCategories();
     setCurrentPlayer();
+    setActiveTile();
 });
 
 function generateTiles (width, height) {
@@ -176,4 +177,8 @@ function setCurrentPlayer() {
     window.CURRENT_PLAYER = window.PLAYERS.red;
 
     document.getElementById("current-player").dataset.player = "red";
+}
+
+function setActiveTile () {
+    document.getElementById("tile-1").classList.add("tile--active");
 }
