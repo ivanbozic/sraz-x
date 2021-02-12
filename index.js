@@ -90,6 +90,7 @@ window.PLAYERS = {
 }
 
 window.CURRENT_PLAYER = null;
+window.CURRENT_POSITION = null;
 
 window.addEventListener('load', () => {
     window.BOARD = document.getElementById("board");
@@ -100,7 +101,7 @@ window.addEventListener('load', () => {
     generateHoles();
     assignCategories();
     setCurrentPlayer();
-    setActiveTile();
+    setCurrentPosition(1);
 });
 
 function generateTiles (width, height) {
@@ -179,6 +180,43 @@ function setCurrentPlayer() {
     document.getElementById("current-player").dataset.player = "red";
 }
 
-function setActiveTile () {
-    document.getElementById("tile-1").classList.add("tile--active");
+function setCurrentPosition (position) {
+    window.CURRENT_POSITION = position;
+
+    tiles = document.querySelectorAll(".tile")
+
+    for (i = 0; i < tiles.length; i++) {
+        tiles[i].classList.remove("tile--active");
+    }
+
+    document.getElementById(`tile-${window.CURRENT_POSITION}`).classList.add("tile--active");
 }
+
+document.onkeydown = function (event) {
+    const key = event.key;
+    let position = window.CURRENT_POSITION;
+
+    console.log(`Current Position: ${position}`);
+
+    if (key == "ArrowRight") {
+        if (position % 8 != 0) {
+            position += 1;
+        }
+    } else if (key == "ArrowLeft") {
+        if (position % 8 != 1) {
+            position -= 1;
+        }
+    } else if (key == "ArrowDown") {
+        if (position < 57) {
+            position += 8;
+        }
+    } else if (key == "ArrowUp") {
+        if (position > 8) {
+            position -= 8;
+        }
+    }
+
+    console.log(`New Position: ${position}`);
+
+    setCurrentPosition(position);
+};
