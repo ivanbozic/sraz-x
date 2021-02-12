@@ -1,5 +1,6 @@
 window.PLAYERS = {
     red: {
+        identifier: "red",
         flag: {
             position: 1
         },
@@ -22,6 +23,7 @@ window.PLAYERS = {
         }
     },
     black: {
+        identifier: "black",
         flag: {
             position: 8
         },
@@ -44,6 +46,7 @@ window.PLAYERS = {
         }
     },
     green: {
+        identifier: "green",
         flag: {
             position: 57
         },
@@ -66,6 +69,7 @@ window.PLAYERS = {
         }
     },
     blue: {
+        identifier: "blue",
         flag: {
             position: 64
         },
@@ -100,7 +104,7 @@ window.addEventListener('load', () => {
     positionPieces();
     generateHoles();
     assignCategories();
-    setCurrentPlayer();
+    setCurrentPlayer("red");
     setCurrentPosition(1);
 });
 
@@ -174,10 +178,10 @@ function assignCategories () {
     }
 }
 
-function setCurrentPlayer() {
-    window.CURRENT_PLAYER = window.PLAYERS.red;
+function setCurrentPlayer(color) {
+    window.CURRENT_PLAYER = window.PLAYERS[color];
 
-    document.getElementById("current-player").dataset.player = "red";
+    document.getElementById("current-player").dataset.player = color;
 }
 
 function setCurrentPosition (position) {
@@ -196,8 +200,6 @@ document.onkeydown = function (event) {
     const key = event.key;
     let position = window.CURRENT_POSITION;
 
-    console.log(`Current Position: ${position}`);
-
     if (key == "ArrowRight") {
         if (position % 8 != 0) {
             position += 1;
@@ -214,9 +216,26 @@ document.onkeydown = function (event) {
         if (position > 8) {
             position -= 8;
         }
+    } else if (key == "Enter") {
+        nextPlayer();
     }
 
-    console.log(`New Position: ${position}`);
-
     setCurrentPosition(position);
-};
+}
+
+function nextPlayer () {
+    let nextPlayer = calculateNextPlayerInOrder(window.CURRENT_PLAYER.identifier);
+    setCurrentPlayer(nextPlayer);
+}
+
+function calculateNextPlayerInOrder(currentPlayer) {
+    if (currentPlayer == "red") {
+        return "blue";
+    } else if (currentPlayer == "blue") {
+        return "black";
+    } else if (currentPlayer == "black") {
+        return "green";
+    } else if (currentPlayer == "green") {
+        return "red";
+    }
+}
