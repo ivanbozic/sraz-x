@@ -105,7 +105,7 @@ window.addEventListener('load', () => {
     generateHoles();
     assignCategories();
     setCurrentPlayer("red");
-    setCurrentPosition(1);
+    setCurrentPosition(window.PLAYERS.red.pieces.R1.position);
 });
 
 function generateTiles (width, height) {
