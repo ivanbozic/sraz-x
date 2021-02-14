@@ -8,18 +8,23 @@ window.PLAYERS = {
         },
         pieces: {
             R1: {
+                identifier: "R1",
                 position: 17
             },
             R2: {
+                identifier: "R2",
                 position: 9
             },
             R3: {
+                identifier: "R3",
                 position: 10
             },
             R4: {
+                identifier: "R4",
                 position: 2
             },
             R5: {
+                identifier: "R5",
                 position: 3
             }
         }
@@ -31,18 +36,23 @@ window.PLAYERS = {
         },
         pieces: {
             K1: {
+                identifier: "K1",
                 position: 24
             },
             K2: {
+                identifier: "K2",
                 position: 16
             },
             K3: {
+                identifier: "K3",
                 position: 15
             },
             K4: {
+                identifier: "K4",
                 position: 7
             },
             K5: {
+                identifier: "K5",
                 position: 6
             }
         }
@@ -54,18 +64,23 @@ window.PLAYERS = {
         },
         pieces: {
             G1: {
+                identifier: "G1",
                 position: 41
             },
             G2: {
+                identifier: "G2",
                 position: 49
             },
             G3: {
+                identifier: "G3",
                 position: 50
             },
             G4: {
+                identifier: "G4",
                 position: 58
             },
             G5: {
+                identifier: "G5",
                 position: 59
             }
         }
@@ -77,18 +92,23 @@ window.PLAYERS = {
         },
         pieces: {
             B1: {
+                identifier: "B1",
                 position: 48
             },
             B2: {
+                identifier: "B2",
                 position: 56
             },
             B3: {
+                identifier: "B3",
                 position: 55
             },
             B4: {
+                identifier: "B4",
                 position: 63
             },
             B5: {
+                identifier: "B5",
                 position: 62
             }
         }
@@ -109,7 +129,7 @@ window.addEventListener('load', () => {
     window.BOARD = document.getElementById("board");
 
     if (window.DEBUG) {
-        setInterval(log, 100);
+        setInterval(printDebugLog, 100);
     }
 
     generateTiles(8, 8);
@@ -242,6 +262,8 @@ document.onkeydown = function (event) {
 
     let position = null;
     let tile = getCurrentTile();
+    let moveTile = getCurrentMoveTile();
+    let piece = getPieceByIdentifier(tile.dataset.pieceIdentifier);
 
     if (window.CURRENT_MODE == "SELECTION") {
         position = window.CURRENT_POSITION;
@@ -266,16 +288,16 @@ document.onkeydown = function (event) {
             position -= 8;
         }
     } else if (key == "Enter") {
-        if (tile.classList.contains("tile--active") || tile.classList.contains("tile--initial-move-position")) {
-            if (window.CURRENT_MODE == "SELECTION") {
-                window.CURRENT_MODE = "MOVE";
-                window.MOVE_POSITION = position;
-            } else if (window.CURRENT_MODE == "MOVE") {
-                window.CURRENT_MODE = "SELECTION";
-                window.MOVE_POSITION = null;
+        if (window.CURRENT_MODE == "SELECTION" && tile.classList.contains("tile--active")) {
+            window.CURRENT_MODE = "MOVE";
+            window.MOVE_POSITION = position;
+        } else if (window.CURRENT_MODE == "MOVE") {
+            if (!moveTile.classList.contains("tile--initial-move-position")) {
+                movePiece(piece, window.MOVE_POSITION);
             }
-        } else {
-            // TODO Move piece.
+
+            window.CURRENT_MODE = "SELECTION";
+            window.MOVE_POSITION = null;
         }
     }
 
@@ -283,7 +305,6 @@ document.onkeydown = function (event) {
         window.CURRENT_POSITION = position;
     } else if (window.CURRENT_MODE == "MOVE") {
         let possibleMoves = [window.CURRENT_POSITION];
-        let piece = getPieceByIdentifier(tile.dataset.pieceIdentifier);
 
         if (window.CURRENT_POSITION % 8 != 1 && canPieceMoveLeft(piece)) possibleMoves.push(window.CURRENT_POSITION - 1);
         if (window.CURRENT_POSITION % 8 != 0 && canPieceMoveRight(piece)) possibleMoves.push(window.CURRENT_POSITION + 1);
@@ -348,7 +369,7 @@ function getPieceByIdentifier(pieceIdentifier) {
     return piece;
 }
 
-function log() {
+function printDebugLog() {
     // Log current mode.
     document.getElementById("log-mode").innerText = window.CURRENT_MODE;
 
@@ -429,4 +450,22 @@ function canPieceMoveLeft(piece) {
     }
 
     return true;
+}
+
+function movePiece(piece, newPosition) {
+    clearPieceFromTile(piece.position);
+
+    window.PLAYERS[piece.color].pieces[piece.identifier].position = newPosition;
+
+    positionSinglePiece(newPosition, piece.identifier, piece.color);
+}
+
+function clearPieceFromTile(tilePosition) {
+    const tile = document.getElementById(`tile-${tilePosition}`);
+
+    tile.classList.remove("tile--piece");
+    delete tile.dataset.pieceIdentifier;
+    delete tile.dataset.pieceColor;
+
+    tile.removeChild(tile.getElementsByClassName("piece")[0]);
 }
