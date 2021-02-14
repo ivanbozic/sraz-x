@@ -1,4 +1,9 @@
 window.DEBUG = true;
+window.SOUND = false;
+
+const AudioEngine = new AudioEngineSingleton({
+    enabled: window.SOUND
+});
 
 window.CURRENT_PLAYER = null;
 window.CURRENT_POSITION = null;
@@ -130,11 +135,11 @@ function setCurrentPosition () {
         if (tile.classList.contains("tile--piece") && window.CURRENT_PLAYER.identifier == tile.dataset.pieceColor) {
             paintPieceProperties(getPieceByIdentifier(tile.dataset.pieceIdentifier));
 
-            document.getElementById("audio-tile-active").play();
+            AudioEngine.play("tile-active");
         } else {
             clearPieceProperties();
 
-            document.getElementById("audio-tile-inactive").play();
+            AudioEngine.play("tile-inactive");
         }
 
         if (tile.classList.contains("tile--piece") && window.CURRENT_PLAYER.identifier == tile.dataset.pieceColor && canThePieceMove(tile.dataset.pieceIdentifier)) {
@@ -149,12 +154,12 @@ function setCurrentPosition () {
         if (tile == moveTile) {
             tile.classList.add("tile--initial-move-position");
 
-            document.getElementById("audio-tile-active").play();
+            AudioEngine.play("tile-active");
         } else {
             tile.classList.add("tile--active");
             moveTile.classList.add("tile--move");
 
-            document.getElementById("audio-tile-inactive").play();
+            AudioEngine.play("tile-inactive");
         }
     }
 }
