@@ -213,5 +213,9 @@ body {
 }
 
 .tile--active {
-    box-shadow: 0 0 0 5px #00FF00;
+    box-shadow: 0 0 0 5px #00ff00;
+}
+
+.tile--inactive {
+    box-shadow: 0 0 0 5px #ff0000;
 }
