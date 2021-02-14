@@ -296,6 +296,13 @@ function printDebugLog() {
     } else {
         document.getElementById("log-move-position").innerText = "<NULL>";
     }
+
+    // Log sound enabled / disabled.
+    if (window.SOUND) {
+        document.getElementById("log-sound").innerText = "<ON>";
+    } else {
+        document.getElementById("log-sound").innerText = "<OFF>";
+    }
 }
 
 function getCurrentTile() {
