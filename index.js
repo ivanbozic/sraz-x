@@ -129,8 +129,12 @@ function setCurrentPosition () {
 
         if (tile.classList.contains("tile--piece") && window.CURRENT_PLAYER.identifier == tile.dataset.pieceColor) {
             paintPieceProperties(getPieceByIdentifier(tile.dataset.pieceIdentifier));
+
+            document.getElementById("audio-tile-active").play();
         } else {
             clearPieceProperties();
+
+            document.getElementById("audio-tile-inactive").play();
         }
 
         if (tile.classList.contains("tile--piece") && window.CURRENT_PLAYER.identifier == tile.dataset.pieceColor && canThePieceMove(tile.dataset.pieceIdentifier)) {
@@ -144,9 +148,13 @@ function setCurrentPosition () {
 
         if (tile == moveTile) {
             tile.classList.add("tile--initial-move-position");
+
+            document.getElementById("audio-tile-active").play();
         } else {
             tile.classList.add("tile--active");
             moveTile.classList.add("tile--move");
+
+            document.getElementById("audio-tile-inactive").play();
         }
     }
 }
@@ -193,6 +201,8 @@ document.onkeydown = function (event) {
             window.CURRENT_MODE = "SELECTION";
             window.MOVE_POSITION = null;
         }
+    } else {
+        return;
     }
 
     if (window.CURRENT_MODE == "SELECTION") {
