@@ -22,6 +22,16 @@ body {
     letter-spacing: 0.5px;
 }
 
+.log {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.log p {
+    margin-right: 40px;
+    color: #00ff00;
+}
+
 .game {
     display: flex;
     align-items: center;
@@ -218,4 +228,12 @@ body {
 
 .tile--inactive {
     box-shadow: 0 0 0 5px #ff0000;
+}
+
+.tile--initial-move-position {
+    box-shadow: 0 0 0 5px #00aa55;
+}
+
+.tile--move {
+    box-shadow: 0 0 0 5px #0055ff;
 }

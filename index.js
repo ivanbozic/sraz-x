@@ -1,3 +1,5 @@
+window.DEBUG = true;
+
 window.PLAYERS = {
     red: {
         identifier: "red",
@@ -95,6 +97,7 @@ window.PLAYERS = {
 
 window.CURRENT_PLAYER = null;
 window.CURRENT_POSITION = null;
+window.MOVE_POSITION = null;
 
 // CURRENT_MODE can either be `SELECTION` where the player
 // is picking the piece they want to move or `MOVE` where
@@ -105,13 +108,20 @@ window.CURRENT_MODE = "SELECTION";
 window.addEventListener('load', () => {
     window.BOARD = document.getElementById("board");
 
+    if (window.DEBUG) {
+        setInterval(log, 100);
+    }
+
     generateTiles(8, 8);
     plantFlags();
     positionPieces();
     generateHoles();
     assignCategories();
     setCurrentPlayer("red");
-    setCurrentPosition(window.PLAYERS.red.pieces.R1.position);
+
+    window.CURRENT_POSITION = window.PLAYERS.red.pieces.R1.position;
+
+    setCurrentPosition();
 });
 
 function generateTiles (width, height) {
@@ -192,14 +202,14 @@ function setCurrentPlayer(color) {
     document.getElementById("current-player").dataset.player = color;
 }
 
-function setCurrentPosition (position) {
-    window.CURRENT_POSITION = position;
-
-    tiles = document.querySelectorAll(".tile")
+function setCurrentPosition () {
+    tiles = document.querySelectorAll(".tile");
 
     for (i = 0; i < tiles.length; i++) {
         tiles[i].classList.remove("tile--active");
         tiles[i].classList.remove("tile--inactive");
+        tiles[i].classList.remove("tile--initial-move-position");
+        tiles[i].classList.remove("tile--move");
     }
 
     if (window.CURRENT_MODE == "SELECTION") {
@@ -207,7 +217,7 @@ function setCurrentPosition (position) {
         // that have remaining moves. Additionally, the user can only select
         // a piece that is not blocked (i.e. can move) even if it has remaining
         // moves. The player can not select opposing pieces, flags or holes.
-        let tile = document.getElementById(`tile-${window.CURRENT_POSITION}`);
+        let tile = getCurrentTile();
 
         if (tile.classList.contains("tile--piece") && window.CURRENT_PLAYER.identifier == tile.dataset.pieceColor && canThePieceMove(tile.dataset.pieceIdentifier)) {
             tile.classList.add("tile--active");
@@ -215,13 +225,29 @@ function setCurrentPosition (position) {
             tile.classList.add("tile--inactive");
         }
     } else if (window.CURRENT_MODE == "MOVE") {
-        // TODO
+        let tile = getCurrentTile();
+        let moveTile = getCurrentMoveTile();
+
+        if (tile == moveTile) {
+            tile.classList.add("tile--initial-move-position");
+        } else {
+            tile.classList.add("tile--active");
+            moveTile.classList.add("tile--move");
+        }
     }
 }
 
 document.onkeydown = function (event) {
     const key = event.key;
-    let position = window.CURRENT_POSITION;
+
+    let position = null;
+    let tile = getCurrentTile();
+
+    if (window.CURRENT_MODE == "SELECTION") {
+        position = window.CURRENT_POSITION;
+    } else if (window.CURRENT_MODE == "MOVE") {
+        position = window.MOVE_POSITION;
+    }
 
     if (key == "ArrowRight") {
         if (position % 8 != 0) {
@@ -240,10 +266,36 @@ document.onkeydown = function (event) {
             position -= 8;
         }
     } else if (key == "Enter") {
-        nextPlayer();
+        if (tile.classList.contains("tile--active") || tile.classList.contains("tile--initial-move-position")) {
+            if (window.CURRENT_MODE == "SELECTION") {
+                window.CURRENT_MODE = "MOVE";
+                window.MOVE_POSITION = position;
+            } else if (window.CURRENT_MODE == "MOVE") {
+                window.CURRENT_MODE = "SELECTION";
+                window.MOVE_POSITION = null;
+            }
+        } else {
+            // TODO Move piece.
+        }
     }
 
-    setCurrentPosition(position);
+    if (window.CURRENT_MODE == "SELECTION") {
+        window.CURRENT_POSITION = position;
+    } else if (window.CURRENT_MODE == "MOVE") {
+        let possibleMoves = [window.CURRENT_POSITION];
+        let piece = getPieceByIdentifier(tile.dataset.pieceIdentifier);
+
+        if (window.CURRENT_POSITION % 8 != 1 && canPieceMoveLeft(piece)) possibleMoves.push(window.CURRENT_POSITION - 1);
+        if (window.CURRENT_POSITION % 8 != 0 && canPieceMoveRight(piece)) possibleMoves.push(window.CURRENT_POSITION + 1);
+        if (window.CURRENT_POSITION > 8 && canPieceMoveUp(piece)) possibleMoves.push(window.CURRENT_POSITION - 8);
+        if (window.CURRENT_POSITION < 57 && canPieceMoveDown(piece)) possibleMoves.push(window.CURRENT_POSITION + 8);
+
+        if(possibleMoves.includes(position)) {
+            window.MOVE_POSITION = position;
+        }
+    }
+
+    setCurrentPosition();
 }
 
 function nextPlayer () {
@@ -267,59 +319,14 @@ function canThePieceMove(pieceIdentifier) {
     if (pieceIdentifier) {
         piece = getPieceByIdentifier(pieceIdentifier);
 
-        canMoveUp = true;
-        canMoveRight = true;
-        canMoveDown = true;
-        canMoveLeft = true;
-
         // The piece can't move to a different place if there's a hole
         // in that place, if there is another piece there, if the piece
         // is on the edge of the board and is trying to move over the edge,
         // or if the player's flag is occupying the new place.
-        
-        // Check if the piece can move up.
-        if (piece.position < 9) {
-            canMoveUp = false;
-        } else {
-            let tileAbove = document.getElementById(`tile-${window.CURRENT_POSITION - 8}`);
-
-            if (tileAbove.classList.contains("tile--piece") || tileAbove.classList.contains("tile--hole") || tileAbove.classList.contains(`flag--${piece.color}`)) {
-                canMoveUp = false;
-            }
-        }
-
-        // Check if the piece can move right.
-        if (piece.position % 8 == 0) {
-            canMoveRight = false;
-        } else {
-            let tileToTheRight = document.getElementById(`tile-${window.CURRENT_POSITION + 1}`);
-
-            if (tileToTheRight.classList.contains("tile--piece") || tileToTheRight.classList.contains("tile--hole") || tileToTheRight.classList.contains(`flag--${piece.color}`)) {
-                canMoveRight = false;
-            }
-        }
-
-        // Check if the piece can move down.
-        if (piece.position > 56) {
-            canMoveDown = false;
-        } else {
-            let tileBelow = document.getElementById(`tile-${window.CURRENT_POSITION + 8}`);
-
-            if (tileBelow.classList.contains("tile--piece") || tileBelow.classList.contains("tile--hole") || tileBelow.classList.contains(`flag--${piece.color}`)) {
-                canMoveDown = false;
-            }
-        }
-
-        // Check if the piece can move left.
-        if (piece.position % 8 == 1) {
-            canMoveLeft = false;
-        } else {
-            let tileToTheLeft = document.getElementById(`tile-${window.CURRENT_POSITION - 1}`);
-
-            if (tileToTheLeft.classList.contains("tile--piece") || tileToTheLeft.classList.contains("tile--hole") || tileToTheLeft.classList.contains(`flag--${piece.color}`)) {
-                canMoveLeft = false;
-            }
-        }
+        canMoveUp = canPieceMoveUp(piece);
+        canMoveRight = canPieceMoveRight(piece);
+        canMoveDown = canPieceMoveDown(piece);
+        canMoveLeft = canPieceMoveLeft(piece);
 
         return (canMoveUp || canMoveRight || canMoveDown || canMoveLeft);
     } else {
@@ -339,4 +346,87 @@ function getPieceByIdentifier(pieceIdentifier) {
     });
 
     return piece;
+}
+
+function log() {
+    // Log current mode.
+    document.getElementById("log-mode").innerText = window.CURRENT_MODE;
+
+    // Log current position.
+    document.getElementById("log-position").innerText = window.CURRENT_POSITION;
+
+    // Log move position.
+    if (window.MOVE_POSITION) {
+        document.getElementById("log-move-position").innerText = window.MOVE_POSITION;
+    } else {
+        document.getElementById("log-move-position").innerText = "<NULL>";
+    }
+}
+
+function getCurrentTile() {
+    return document.getElementById(`tile-${window.CURRENT_POSITION}`);
+}
+
+function getCurrentMoveTile() {
+    if (window.CURRENT_MODE == "MOVE") {
+        return document.getElementById(`tile-${window.MOVE_POSITION}`);
+    } else {
+        return undefined;
+    }
+}
+
+function canPieceMoveUp(piece) {
+    if (piece.position < 9) {
+        return false;
+    } else {
+        let tileAbove = document.getElementById(`tile-${window.CURRENT_POSITION - 8}`);
+
+        if (tileAbove.classList.contains("tile--piece") || tileAbove.classList.contains("tile--hole") || tileAbove.classList.contains(`flag--${piece.color}`)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function canPieceMoveRight(piece) {
+    if (piece.position % 8 == 0) {
+        return false;
+    } else {
+        let tileToTheRight = document.getElementById(`tile-${window.CURRENT_POSITION + 1}`);
+
+        if (tileToTheRight.classList.contains("tile--piece") || tileToTheRight.classList.contains("tile--hole") || tileToTheRight.classList.contains(`flag--${piece.color}`)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function canPieceMoveDown(piece) {
+    if (piece.position > 56) {
+        return false;
+    } else {
+        let tileBelow = document.getElementById(`tile-${window.CURRENT_POSITION + 8}`);
+
+        if (tileBelow.classList.contains("tile--piece") || tileBelow.classList.contains("tile--hole") || tileBelow.classList.contains(`flag--${piece.color}`)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function canPieceMoveLeft(piece) {
+    if (piece.position % 8 == 1) {
+        return false;
+    } else {
+        let tileToTheLeft = document.getElementById(`tile-${window.CURRENT_POSITION - 1}`);
+
+        if (tileToTheLeft.classList.contains("tile--piece") || tileToTheLeft.classList.contains("tile--hole") || tileToTheLeft.classList.contains(`flag--${piece.color}`)) {
+            return false;
+        }
+    }
+
+    return true;
 }
