@@ -69,6 +69,25 @@ body {
     display: flex;
 }
 
+/* CURRENT PIECE */
+
+.current-piece {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.current-piece__identifier {
+    min-height: 24px;
+    font-size: 21px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.current-piece__moves {
+    min-height: 32px;
+}
+
 /* CATEGORIES LEGEND */
 
 .categories-legend {

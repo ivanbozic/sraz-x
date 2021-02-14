@@ -9,23 +9,33 @@ window.PLAYERS = {
         pieces: {
             R1: {
                 identifier: "R1",
-                position: 17
+                type: "pawn",
+                position: 17,
+                moves: 1
             },
             R2: {
                 identifier: "R2",
-                position: 9
+                type: "pawn",
+                position: 9,
+                moves: 1
             },
             R3: {
                 identifier: "R3",
-                position: 10
+                type: "pawn",
+                position: 10,
+                moves: 1
             },
             R4: {
                 identifier: "R4",
-                position: 2
+                type: "pawn",
+                position: 2,
+                moves: 1
             },
             R5: {
                 identifier: "R5",
-                position: 3
+                type: "pawn",
+                position: 3,
+                moves: 1
             }
         }
     },
@@ -37,23 +47,33 @@ window.PLAYERS = {
         pieces: {
             K1: {
                 identifier: "K1",
-                position: 24
+                type: "pawn",
+                position: 24,
+                moves: 1
             },
             K2: {
                 identifier: "K2",
-                position: 16
+                type: "pawn",
+                position: 16,
+                moves: 1
             },
             K3: {
                 identifier: "K3",
-                position: 15
+                type: "pawn",
+                position: 15,
+                moves: 1
             },
             K4: {
                 identifier: "K4",
-                position: 7
+                type: "pawn",
+                position: 7,
+                moves: 1
             },
             K5: {
                 identifier: "K5",
-                position: 6
+                type: "pawn",
+                position: 6,
+                moves: 1
             }
         }
     },
@@ -65,23 +85,33 @@ window.PLAYERS = {
         pieces: {
             G1: {
                 identifier: "G1",
-                position: 41
+                type: "pawn",
+                position: 41,
+                moves: 1
             },
             G2: {
                 identifier: "G2",
-                position: 49
+                type: "pawn",
+                position: 49,
+                moves: 1
             },
             G3: {
                 identifier: "G3",
-                position: 50
+                type: "pawn",
+                position: 50,
+                moves: 1
             },
             G4: {
                 identifier: "G4",
-                position: 58
+                type: "pawn",
+                position: 58,
+                moves: 1
             },
             G5: {
                 identifier: "G5",
-                position: 59
+                type: "pawn",
+                position: 59,
+                moves: 1
             }
         }
     },
@@ -93,23 +123,33 @@ window.PLAYERS = {
         pieces: {
             B1: {
                 identifier: "B1",
-                position: 48
+                type: "pawn",
+                position: 48,
+                moves: 1
             },
             B2: {
                 identifier: "B2",
-                position: 56
+                type: "pawn",
+                position: 56,
+                moves: 1
             },
             B3: {
                 identifier: "B3",
-                position: 55
+                type: "pawn",
+                position: 55,
+                moves: 1
             },
             B4: {
                 identifier: "B4",
-                position: 63
+                type: "pawn",
+                position: 63,
+                moves: 1
             },
             B5: {
                 identifier: "B5",
-                position: 62
+                type: "pawn",
+                position: 62,
+                moves: 1
             }
         }
     }
@@ -238,6 +278,12 @@ function setCurrentPosition () {
         // a piece that is not blocked (i.e. can move) even if it has remaining
         // moves. The player can not select opposing pieces, flags or holes.
         let tile = getCurrentTile();
+
+        if (tile.classList.contains("tile--piece") && window.CURRENT_PLAYER.identifier == tile.dataset.pieceColor) {
+            paintPieceProperties(getPieceByIdentifier(tile.dataset.pieceIdentifier));
+        } else {
+            clearPieceProperties();
+        }
 
         if (tile.classList.contains("tile--piece") && window.CURRENT_PLAYER.identifier == tile.dataset.pieceColor && canThePieceMove(tile.dataset.pieceIdentifier)) {
             tile.classList.add("tile--active");
@@ -468,4 +514,38 @@ function clearPieceFromTile(tilePosition) {
     delete tile.dataset.pieceColor;
 
     tile.removeChild(tile.getElementsByClassName("piece")[0]);
+}
+
+function paintPieceProperties(piece) {
+    // Render the name of the highlighted piece.
+    let identifierContainer = document.getElementById("current-piece-identifier");
+    identifierContainer.innerHTML = `${piece.type} ${numberToRomanNumeral(parseInt(piece.identifier.substring(1)))}`;
+
+    // Draw how many (remaining) moves does this piece have.
+    let movesContainer = document.getElementById("current-piece-moves");
+
+    const boot = document.createElement("img");
+    boot.src = "assets/move-boot.svg";
+    boot.alt = "Boot";
+
+    movesContainer.innerHTML = null;
+    movesContainer.appendChild(boot);
+}
+
+function clearPieceProperties() {
+    let identifierContainer = document.getElementById("current-piece-identifier");
+    identifierContainer.innerHTML = null;
+
+    let movesContainer = document.getElementById("current-piece-moves");
+    movesContainer.innerHTML = null;
+}
+
+function numberToRomanNumeral(integer) {
+    // This is not a complete implementation since we are
+    // certain that pieces will not go above 5.
+    if (integer == 1) return "I";
+    if (integer == 2) return "II";
+    if (integer == 3) return "III";
+    if (integer == 4) return "IV";
+    if (integer == 5) return "V";
 }
