@@ -47,7 +47,7 @@ body {
 /* CURRENT PLAYER */
 
 .current-player {
-    margin-bottom: 24px;
+    margin-bottom: 8px;
 }
 
 .current-player > div {
@@ -84,14 +84,26 @@ body {
     margin-bottom: 8px;
 }
 
+.current-piece__level {
+    min-height: 32px;
+}
+
+.current-piece__level img {
+    margin: 0 3px;
+}
+
 .current-piece__moves {
     min-height: 32px;
+}
+
+.current-piece__moves img {
+    margin: 0 3px;
 }
 
 /* CATEGORIES LEGEND */
 
 .categories-legend {
-    margin-top: 24px;
+    margin-top: 8px;
 }
 
 .categories-legend > div {

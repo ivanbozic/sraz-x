@@ -215,6 +215,7 @@ document.onkeydown = function (event) {
 
 function nextPlayer () {
     let nextPlayer = calculateNextPlayerInOrder(window.CURRENT_PLAYER.identifier);
+    resetCurrentPlayer();
     setCurrentPlayer(nextPlayer);
 }
 
@@ -356,6 +357,8 @@ function movePiece(piece, newPosition) {
     window.PLAYERS[piece.color].pieces[piece.identifier].position = newPosition;
     window.PLAYERS[piece.color].pieces[piece.identifier].availableMoves = piece.moves - 1;
 
+    window.PLAYERS[piece.color].pieces[piece.identifier].level += 1;
+
     positionSinglePiece(newPosition, piece.identifier, piece.color);
 
     moveToNextPlayerIfPossible();
@@ -376,16 +379,27 @@ function paintPieceProperties(piece) {
     let identifierContainer = document.getElementById("current-piece-identifier");
     identifierContainer.innerHTML = `${piece.type} ${numberToRomanNumeral(parseInt(piece.identifier.substring(1)))}`;
 
+    // Draw the level of this piece.
+    let medalContainer = document.getElementById("current-piece-level");
+    medalContainer.innerHTML = null;
+
+    Array(piece.level).fill().map(_ => {
+        const medal = document.createElement("img");
+        medal.src = "assets/medal.svg";
+        medal.alt = "Medal";
+
+        medalContainer.appendChild(medal);
+    });
+
     // Draw how many (remaining) moves does this piece have.
     let movesContainer = document.getElementById("current-piece-moves");
-
-    const boot = document.createElement("img");
-    boot.src = "assets/move-boot.svg";
-    boot.alt = "Boot";
-
     movesContainer.innerHTML = null;
 
     Array(piece.availableMoves).fill().map(_ => {
+        const boot = document.createElement("img");
+        boot.src = "assets/move-boot.svg";
+        boot.alt = "Boot";
+
         movesContainer.appendChild(boot);
     });
 }
@@ -393,6 +407,9 @@ function paintPieceProperties(piece) {
 function clearPieceProperties() {
     let identifierContainer = document.getElementById("current-piece-identifier");
     identifierContainer.innerHTML = null;
+
+    let medalContainer = document.getElementById("current-piece-level");
+    medalContainer.innerHTML = null;
 
     let movesContainer = document.getElementById("current-piece-moves");
     movesContainer.innerHTML = null;
@@ -417,9 +434,13 @@ function moveToNextPlayerIfPossible() {
         }
     }
 
-    console.log(`Pieces that can move: ${piecesThatCanMove}`);
-
     if (piecesThatCanMove == 0) {
         nextPlayer();
+    }
+}
+
+function resetCurrentPlayer() {
+    for (const piece in window.CURRENT_PLAYER.pieces) {
+        window.CURRENT_PLAYER.pieces[piece].availableMoves = window.CURRENT_PLAYER.pieces[piece].moves;
     }
 }
